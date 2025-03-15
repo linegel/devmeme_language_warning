@@ -63,6 +63,24 @@ npm start
 npm run watch
 ```
 
+## Testing
+
+The bot includes a comprehensive test suite to ensure functionality works as expected. To run the tests:
+
+```bash
+npm test
+```
+
+To run tests in watch mode during development:
+
+```bash
+npm run test:watch
+```
+
+### Test Coverage
+
+The test suite is set up to generate coverage reports. After running the tests, you can view the coverage report in the `coverage` directory.
+
 ## Adding the Bot to a Channel
 
 1. Create a bot via BotFather on Telegram
