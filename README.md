@@ -38,8 +38,8 @@ cp .env.example .env
 Edit the `.env` file and add your Telegram Bot token and OpenAI API key:
 
 ```
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
-OPENAI_API_KEY=your_openai_api_key_here
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+OPENAI_API_KEY=your_openai_api_key
 ```
 
 ## Usage
@@ -77,6 +77,38 @@ To run tests in watch mode during development:
 npm run test:watch
 ```
 
+### Test Structure
+
+The test suite is organized around these key components:
+
+1. **Language Service Tests** (`language.test.ts`)
+   - Tests language detection functionality with langdetect
+   - Verifies correct fallback behavior when primary detection fails
+   - Tests handling of API errors gracefully
+
+2. **Image Analysis Tests** (`image.test.ts`)
+   - Tests image analysis using OpenAI's vision model
+   - Verifies handling of various text scenarios in images
+   - Tests fallback mechanisms for invalid responses
+   - Tests error handling for API failures
+
+3. **Bot Logic Tests** (`bot.test.ts`) 
+   - Tests command handlers for `/start` and `/help`
+   - Tests channel post handling for text messages
+   - Tests image processing and translation workflows
+   - Tests empty message handling
+
+### Mocking Approach
+
+The tests use Jest's mocking capabilities to isolate units and avoid external dependencies:
+
+- **OpenAI API**: Fully mocked to simulate various responses without actual API calls
+- **Langdetect**: Mocked to provide controlled language detection results
+- **Telegram Bot API**: Mocked to verify correct interactions and message handling
+- **Environment Variables**: Controlled through test setup to ensure predictable behavior
+
+This approach allows for thorough testing of business logic without relying on external services, ensuring tests are fast, reliable, and repeatable.
+
 ### Test Coverage
 
 The test suite is set up to generate coverage reports. After running the tests, you can view the coverage report in the `coverage` directory.
@@ -99,6 +131,12 @@ The test suite is set up to generate coverage reports. After running the tests, 
 5. If non-English content is detected, it:
    - Translates the content to English using OpenAI
    - Sends a reply with the translation and a friendly reminder to use English
+
+## Project Structure
+
+- `src/services/` - Core services for language detection and image analysis
+- `src/index.ts` - Main bot setup and handler registration
+- `src/__tests__/` - Test files for all functionality
 
 ## License
 
