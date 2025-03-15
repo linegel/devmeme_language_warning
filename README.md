@@ -2,6 +2,8 @@
 
 A Telegram bot that monitors channel messages for non-English content. When it detects a message in a language other than English (including text in images), it translates the content to English and sends a reminder to use English only.
 
+Initially created for [dev meme](https://t.me/dev_meme), shared for all TG channel owners.
+
 ## Features
 
 - Monitors text messages in channels for non-English content
@@ -17,9 +19,32 @@ A Telegram bot that monitors channel messages for non-English content. When it d
 - A Telegram Bot token (from BotFather)
 - An OpenAI API key with access to GPT-4 Vision API
 
-## Installation
+## Detailed Setup Guide
 
-### 1. Clone the repository and install dependencies
+### Obtaining a Telegram Bot API Token
+
+1. Open Telegram and search for "@BotFather"
+2. Start a chat with BotFather by clicking "Start" or sending "/start"
+3. Send the command "/newbot" to create a new bot
+4. Follow the prompts to name your bot:
+   - First, provide a display name for your bot (e.g., "English Channel Monitor")
+   - Then, provide a username for your bot (must end with "bot", e.g., "english_monitor_bot")
+5. Once created, BotFather will provide you with a token that looks like `123456789:ABCDefGhIJKlmNoPQRsTUVwxyZ`
+6. Save this token securely - you'll need it for the `.env` file
+
+### Obtaining an OpenAI API Key
+
+1. Go to [OpenAI's platform](https://platform.openai.com/) or 
+2. Sign up or log in to your OpenAI account
+3. Navigate to the [API keys section](https://platform.openai.com/api-keys)
+4. Click "Create new secret key"
+5. Name your key (e.g., "Telegram Bot Key") and click "Create"
+6. Copy the generated API key (it starts with "sk-")
+7. Save this key securely - you'll need it for the `.env` file and you won't be able to view it again
+
+### Installation
+
+#### 1. Clone the repository and install dependencies
 
 ```bash
 git clone https://github.com/yourusername/tg-bot-language.git
@@ -27,7 +52,7 @@ cd tg-bot-language
 npm install
 ```
 
-### 2. Configure environment variables
+#### 2. Configure environment variables
 
 Create a `.env` file based on the provided `.env.example`:
 
@@ -41,6 +66,33 @@ Edit the `.env` file and add your Telegram Bot token and OpenAI API key:
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
 OPENAI_API_KEY=your_openai_api_key
 ```
+
+## Setting Up Your Bot in Telegram
+
+### Adding Your Bot to a Channel
+
+1. Open your Telegram channel
+2. Click on the channel name at the top to view channel info
+3. Select "Administrators" or "Admins" 
+4. Click "Add Admin" or "Add Administrator"
+5. Search for your bot by its username (e.g., @english_monitor_bot)
+6. Select your bot and assign the following permissions:
+   - ✅ Post Messages
+   - ✅ Read Messages
+   - ✅ Delete Messages (optional, but recommended)
+   - ✅ Edit Messages (optional, but recommended)
+7. Save the changes
+
+### Configuring Bot Privacy Settings (if needed)
+
+By default, Telegram bots can't see all messages in a group. If your bot needs to monitor all messages:
+
+1. Open your chat with @BotFather
+2. Send the command "/mybots"
+3. Select your bot from the list
+4. Select "Bot Settings"
+5. Select "Group Privacy"
+6. Select "Turn off" to allow your bot to see all messages
 
 ## Usage
 
@@ -62,6 +114,33 @@ npm start
 ```bash
 npm run watch
 ```
+
+### Running as a Service (Production)
+
+For running the bot continuously on a server, consider using:
+
+- **PM2**: A process manager for Node.js applications
+  ```bash
+  npm install -g pm2
+  pm2 start npm --name "language-bot" -- start
+  pm2 save
+  pm2 startup
+  ```
+
+- **Docker**: For containerized deployment
+  - A Dockerfile is included in the repository
+  - Build and run with:
+    ```bash
+    docker build -t tg-language-bot .
+    docker run -d --name language-bot --env-file .env tg-language-bot
+    ```
+
+## Bot Commands
+
+The bot responds to the following commands:
+
+- `/start` - Displays a welcome message and overview of the bot's functionality
+- `/help` - Shows help information and available commands
 
 ## Testing
 
@@ -113,12 +192,24 @@ This approach allows for thorough testing of business logic without relying on e
 
 The test suite is set up to generate coverage reports. After running the tests, you can view the coverage report in the `coverage` directory.
 
-## Adding the Bot to a Channel
+## Troubleshooting
 
-1. Create a bot via BotFather on Telegram
-2. Add the bot to your channel as an administrator
-3. Give the bot permission to post messages
-4. Start the bot using the instructions above
+### Bot Not Responding in Channel
+- Ensure the bot has been added as an administrator
+- Verify the bot has the necessary permissions to post messages
+- Check that the bot is running (using `npm start` or similar)
+- Check the logs for any error messages
+- Ensure the bot's privacy mode is disabled if needed
+
+### API Errors
+- Verify your OpenAI API key is valid and has sufficient credits
+- Check if your Telegram Bot token is correct
+- Ensure your environment variables are correctly set in the `.env` file
+
+### Language Detection Issues
+- The bot uses a combination of local language detection and OpenAI
+- For non-standard text or slang, OpenAI provides better detection
+- For images with text, the detection accuracy depends on the clarity of the text
 
 ## How it Works
 
